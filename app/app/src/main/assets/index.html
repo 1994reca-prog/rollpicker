@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Подбор рулонов</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 16px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    input, button {
+      width: 100%;
+      font-size: 18px;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #1976d2;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+
+    button:active {
+      background: #125aa0;
+    }
+
+    .result {
+      margin-top: 12px;
+      font-size: 16px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📦 Подбор рулонов</h1>
+
+  <div class="card">
+    <label>Нужно кг:</label>
+    <input id="needKg" type="number" step="0.01" placeholder="Например: 85.06">
+    <button onclick="calc()">Рассчитать</button>
+  </div>
+
+  <div class="card">
+    <div id="output" class="result">Готово к работе (офлайн)</div>
+  </div>
+
+  <script>
+    // Пример весов рулонов (позже подключим OCR)
+    const rolls = [
+      5.52,5.59,5.61,5.60,5.60,5.58,5.52,5.58,5.53,5.59,
+      5.63,5.58,5.55,5.60,5.63,5.59,5.91,5.87,5.83,5.88,
+      5.59,5.57,5.55,5.60,5.55,5.60,5.56,5.61,5.63,5.56,
+      5.55,5.60,5.54,5.60,5.57,5.63,5.64,5.69,5.67,5.73,
+      5.65,5.62
+    ];
+
+    function calc() {
+      const need = parseFloat(document.getElementById("needKg").value);
+      if (isNaN(need)) {
+        output("Введите нужный вес");
+        return;
+      }
+
+      let sum = 0;
+      let used = [];
+
+      for (let w of rolls) {
+        if (sum + w <= need + 0.01) {
+          sum += w;
+          used.push(w);
+        }
+      }
+
+      output(
+        "Нужно: " + need.toFixed(2) + " кг\n" +
+        "Собрано: " + sum.toFixed(2) + " кг\n" +
+        "Рулоны:\n" + used.join(", ")
+      );
+    }
+
+    function output(text) {
+      document.getElementById("output").innerText = text;
+    }
+  </script>
+
+</body>
+</html>
